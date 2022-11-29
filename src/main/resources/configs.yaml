@@ -1,0 +1,177 @@
+openapi: 3.0.1
+info:
+  title: API testUser
+  description: API for testing back end js capabilities
+  version: 1.0.0
+servers:
+- url: http://localhost:8080/users
+tags:
+- name: users
+  description: this endpoint is the main route, and manage all the CRUD of users
+paths:
+  /:
+    post:
+      tags:
+      - users
+      summary: Insert a new user and return it.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/bodyFromDataPost'
+        required: true
+      response:
+        200:
+          description: It gets the user saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponseObject"
+        404:
+          $ref: "#/components/responses/NotFound"
+  /:
+    put:
+      tags:
+      - users
+      summary: Update a user
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/bodyFromDataPut'
+        required: true
+      response:
+        200:
+          description: Returns the user updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponseObject"
+        404:
+          $ref: "#/components/responses/NotFound"     
+  /:
+    get:
+      tags:
+      - users
+      summary: get a paginated list of users for 10 to 10
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: query parameter for paginate the users
+      response:
+        200:
+          description: get a paginated list of users for 10 to 10
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponseArray"
+        404:
+          $ref: "#/components/responses/NotFound"   
+  /{id}:
+    get:
+      tags:
+      - users
+      summary: Returns a single user
+      response:
+        200:
+          description: Returns a single user for detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponseObject"
+        404:
+          $ref: "#/components/responses/NotFound"            
+  /{id}:
+    delete:
+      tags:
+      - users
+      summary: physical delete
+      response:
+        200:
+          $ref: "#/components/responses/physical"  
+        404:
+          $ref: "#/components/responses/NotFound"  
+  /logic/{id}:
+    delete:
+      tags:
+      - users
+      summary: logical delete
+      response:
+        200:
+          description: Returns a single user for detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponseObject"
+        404:
+          $ref: "#/components/responses/NotFound"  
+
+components:
+  responses:
+    NotFound: Not found route
+    physical: physical delete 
+
+  schemas:
+    bodyFromDataPost:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: Image of the user 
+        name:
+          type: string
+          description: Name of the user 
+        email:
+          type: string
+          description: Email of user split for , 
+        sex:
+          type: string
+          description: Sex of user  
+        status:
+          type: string
+          description: Status of user, 200 active and 500 inactive
+    bodyFromDataPut:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: Image of the user 
+        name:
+          type: string
+          description: Name of the user 
+        email:
+          type: string
+          description: Email of user split for , 
+        sex:
+          type: string
+          description: Sex of user   
+        status:
+          type: string
+          description: Status of user, 200 active and 500 inactive
+        id:
+          type: integer
+          description: Id of user to update, or we will get an error
+    SuccessResponseArray:
+      type: array
+      items:
+        type:object
+    SuccessResponseObject:
+      type: object
+      properties:
+        id:
+          type: integer
+        image:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        sex:
+          type: string
+        status:
+          type: string
+
